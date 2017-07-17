@@ -59,7 +59,7 @@ mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
 
 printf "\n\nInstalling the base package\n\n"
-pacstrap /mnt base base-devel btrfs-progs zsh
+pacstrap /mnt base
 
 printf "\n\nExecuting fstab\n\n"
 genfstab -U /mnt >> /mnt/etc/fstab
