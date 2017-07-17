@@ -19,15 +19,6 @@ timedatectl status
 printf "\n\nFormat boot/efi -> partition sda1\n\n"
 mkfs.fat -F32 /dev/sda1
 
-printf "\n\nMount random partitions root -> partition sda2\n\n"
-cryptsetup open --type plain /dev/sda2 cryptroot --key-file /dev/random
-
-printf "\n\nWipe partitions with zeros\n\n"
-dd if=/dev/zero of=/dev/mapper/cryptroot status=progress bs=1M
-
-printf "\n\nClose the temporary container\n\n"
-cryptsetup close cryptroot
-
 printf "\n\nCreate LUKS root container -> partition sda2\n\n"
 cryptsetup luksFormat --key-size 512 /dev/sda2
 cryptsetup luksDump /dev/sda2
