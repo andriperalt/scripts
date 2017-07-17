@@ -29,7 +29,7 @@ echo "s4n-arpp" > /etc/hostname
 printf "\n\nConfiguring network\n\n"
 pacman -S --needed networkmanager network-manager-applet dhclient iw wpa_supplicant dialog
 systemctl stop dhcpcd.service
-systemctl start NetworkManager.servic
+systemctl start NetworkManager.service
 systemctl enable NetworkManager.service
 
 printf "\n\nSet root password\n\n"
