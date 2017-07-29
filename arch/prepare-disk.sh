@@ -15,27 +15,34 @@ function wipe_cryptdisk {
 
 function close_cryptdisk {
   cryptsetup close cryptdisk
-  echo "OK: Close the temporary container"
+  echo "====== OK: Close the temporary container ======"
 }
 
 if test -n "$disk_name" ; then
   echo "======= PLEASE MAKE SURE TO ERASE AND UNMOUNT DISK /dev/${disk_name} FIRST ======"
-  echo ""
   
   if mount_cryptdisk ; then
-    echo "OK: Mount disk /dev/${disk_name} with random encrypt"
+    echo "====== OK: Mount disk /dev/${disk_name} with random encrypt ======="
     if wipe_cryptdisk ; then
-      echo "Wipe /dev/${disk_name}"
-      close_cryptdisk
+      echo "====== OK: Wipe /dev/${disk_name} ====== "
+      if close_cryptdisk ; then
+        echo "====== OK: Close the temporary container ======"
+      else
+        exit 1
+      fi
     else
-      close_cryptdisk
+      if close_cryptdisk ; then
+        echo "====== OK: Close the temporary container ======"
+      else 
+        exit 1
+      fi
       exit 1
     fi
   else
     exit 1
   fi
 else
-  echo "ERROR: Please define disk name. Run lsblk -f to know the name of the disks"
+  echo "====== ERROR: Please define disk name. Run lsblk -f to know the name of the disks ======"
 fi
 
 exit 0
