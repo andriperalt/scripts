@@ -19,20 +19,23 @@ function close_cryptdisk {
 }
 
 if test -n "$disk_name" ; then
-  echo "======= PLEASE MAKE SURE TO ERASE AND UNMOUNT DISK /dev/${disk_name} FIRST ======\n\n"
+  echo "======= PLEASE MAKE SURE TO ERASE AND UNMOUNT DISK /dev/${disk_name} FIRST ======"
+  echo ""
   
   if mount_cryptdisk ; then
     echo "Mount disk /dev/${disk_name} with random encrypt"
     if wipe_cryptdisk ; then
       echo "Wipe /dev/${disk_name}"
       close_cryptdisk
+      exit 0
     else
       close_cryptdisk
-      exit
+      exit 1
     fi
   else
-    exit
+    exit 1
   fi
 else
   echo "Please define disk name. Run lsblk -f to know the name of the disks"
+  exit 0
 fi
