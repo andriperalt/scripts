@@ -1,6 +1,5 @@
 #! /bin/sh
 
-#run lsblk -f to know the name of the disk 
 disk_name=$1
 
 if test -n "$disk_name"; then
@@ -15,6 +14,6 @@ if test -n "$disk_name"; then
   printf "\n\nClose the temporary container\n\n"
   cryptsetup close cryptdisk
 else
-  printf "\n\nDefine disk name\n\n"
+  printf "\n\nDefine disk name. Run lsblk -f to know the name of the disks\n\n"
 fi
 
