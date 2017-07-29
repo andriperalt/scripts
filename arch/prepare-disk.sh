@@ -15,7 +15,6 @@ function wipe_cryptdisk {
 
 function close_cryptdisk {
   cryptsetup close cryptdisk
-  echo "====== OK: Close the temporary container ======"
 }
 
 if test -n "$disk_name" ; then
