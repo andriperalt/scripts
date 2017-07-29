@@ -10,7 +10,7 @@ if test -n "$disk_name"; then
   cryptsetup open --type plain "/dev/${disk_name}" cryptdisk --key-file /dev/random
 
   printf "\n\nWipe /dev/${disk_name}\n\n"
-  dd if=/dev/zero of=/dev/mapper/cryptdisk status= progress bs=1M
+  dd if=/dev/zero of=/dev/mapper/cryptdisk status=progress bs=1M
 
   printf "\n\nClose the temporary container\n\n"
   cryptsetup close cryptdisk
