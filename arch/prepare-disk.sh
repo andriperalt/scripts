@@ -10,12 +10,12 @@ function mount_cryptdisk {
 }
 
 function wipe_cryptdisk {
-  dd if=/dev/zero of=/dev/mapper/cryptdisk status=progress bs=1M
+  dd if=/dev/zero of=/dev/mapper/cryptdisk status=progress bs=1M
 }
 
 function close_cryptdisk {
   cryptsetup close cryptdisk
-  echo "Close the temporary container"
+  echo "OK: Close the temporary container"
 }
 
 if test -n "$disk_name" ; then
@@ -23,7 +23,7 @@ if test -n "$disk_name" ; then
   echo ""
   
   if mount_cryptdisk ; then
-    echo "Mount disk /dev/${disk_name} with random encrypt"
+    echo "OK: Mount disk /dev/${disk_name} with random encrypt"
     if wipe_cryptdisk ; then
       echo "Wipe /dev/${disk_name}"
       close_cryptdisk
@@ -35,7 +35,7 @@ if test -n "$disk_name" ; then
     exit 1
   fi
 else
-  echo "Please define disk name. Run lsblk -f to know the name of the disks"
+  echo "ERROR: Please define disk name. Run lsblk -f to know the name of the disks"
 fi
 
 exit 0
