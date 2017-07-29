@@ -27,7 +27,6 @@ if test -n "$disk_name" ; then
     if wipe_cryptdisk ; then
       echo "Wipe /dev/${disk_name}"
       close_cryptdisk
-      exit 0
     else
       close_cryptdisk
       exit 1
@@ -37,5 +36,6 @@ if test -n "$disk_name" ; then
   fi
 else
   echo "Please define disk name. Run lsblk -f to know the name of the disks"
-  exit 0
 fi
+
+exit 0
