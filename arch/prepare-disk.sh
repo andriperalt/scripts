@@ -14,7 +14,7 @@ function wipe_cryptdisk {
 }
 
 function close_cryptdisk {
-  cryptsetup close cryptdisk
+  cryptsetup close cryptdisk
 }
 
 if test -n "$disk_name" ; then
