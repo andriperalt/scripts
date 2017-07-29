@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 disk_name=$1
 
@@ -21,4 +21,3 @@ if test -n "$disk_name"; then
 else
   printf "\n\nDefine disk name. Run lsblk -f to know the name of the disks\n\n"
 fi
-
