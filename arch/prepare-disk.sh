@@ -15,5 +15,7 @@ if test -n "$disk_name"; then
   
   cryptsetup close cryptdisk && echo "Close the temporary container"
 else
-  echo "ERROR: Define disk name. Run lsblk -f to know the name of the disks" >&2
+  echo "Define disk name. Run lsblk -f to know the name of the disks" >&2
 fi
+
+exit 0

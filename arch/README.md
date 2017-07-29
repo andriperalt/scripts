@@ -14,5 +14,5 @@ https://raw.githubusercontent.com/arperalta3/scripts/master/arch/install-1.sh >>
 + Run install
 
  ```
-$ sh install-1.sh
+$ bash install-1.sh
 ```
