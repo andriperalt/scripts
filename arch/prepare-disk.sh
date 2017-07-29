@@ -7,7 +7,7 @@ if test -n "$disk_name"; then
   printf "\n\n======= PLEASE MAKE SURE TO ERASE DISK FIRST ======\n\n"
 
   printf "\n\nMount disk with random encrypt -> disk sda\n\n"
-  cryptsetup open --type plain "${disk_name}" cryptdisk --key-file /dev/random
+  cryptsetup open --type plain "/dev/${disk_name}" cryptdisk --key-file /dev/random
 
   printf "\n\nWipe disk\n\n"
   dd if=/dev/zero of=/dev/mapper/cryptdisk status=progress bs=1M
