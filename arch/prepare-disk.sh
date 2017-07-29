@@ -6,10 +6,10 @@ disk_name=$1
 if test -n "$disk_name"; then
   printf "\n\n======= PLEASE MAKE SURE TO ERASE DISK FIRST ======\n\n"
 
-  printf "\n\nMount disk with random encrypt -> disk sda\n\n"
+  printf "\n\nMount disk /dev/${disk_name} with random encrypt\n\n"
   cryptsetup open --type plain "/dev/${disk_name}" cryptdisk --key-file /dev/random
 
-  printf "\n\nWipe disk\n\n"
+  printf "\n\nWipe /dev/${disk_name}\n\n"
   dd if=/dev/zero of=/dev/mapper/cryptdisk status=progress bs=1M
 
   printf "\n\nClose the temporary container\n\n"
@@ -17,3 +17,4 @@ if test -n "$disk_name"; then
 else
   printf "\n\nDefine disk name\n\n"
 fi
+
