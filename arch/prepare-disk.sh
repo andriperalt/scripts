@@ -2,7 +2,10 @@
 
 disk_name=$1
 
-exec &> prepare-disk.log
+>prepare-disk.log
+>prepare-disk.err
+exec >  >(tee -ia prepare-disk.log)
+exec 2> >(tee -ia prepare-disk.err >&2)
 
 if test -n "$disk_name"; then
   printf "\n\n======= PLEASE MAKE SURE TO ERASE AND UNMOUNT DISK /dev/${disk_name} FIRST ======\n\n"
