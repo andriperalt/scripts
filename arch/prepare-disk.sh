@@ -1,11 +1,9 @@
 #!/bin/bash
-
-disk_name=$1
-
 >prepare-disk.log
 >prepare-disk.err
-exec >  >(tee -ia prepare-disk.log)
-exec 2> >(tee -ia prepare-disk.err >&2)
+exec > >(tee -ia prepare-disk.log) 2> >(tee -ia prepare-disk.err >&2)
+
+disk_name=$1
 
 if test -n "$disk_name"; then
   printf "\n\n======= PLEASE MAKE SURE TO ERASE AND UNMOUNT DISK /dev/${disk_name} FIRST ======\n\n"
@@ -19,5 +17,5 @@ if test -n "$disk_name"; then
   printf "\n\nClose the temporary container\n\n"
   cryptsetup close cryptdisk
 else
-  printf "\n\nDefine disk name. Run lsblk -f to know the name of the disks\n\n"
+  echo "Define disk name. Run lsblk -f to know the name of the disks" >&2
 fi
