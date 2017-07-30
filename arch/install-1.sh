@@ -32,7 +32,7 @@ set -o errexit
 } && {
   loadkeys "${keyboard_layout}" && echo "====== INFO: Setted keyboard layout to ${keyboard_layout} ======" && echo ""
 } && {
-  if test "${wifi}" -eq true
+  if test "${wifi}" -eq "true"
   then
     wifi-menu && echo "======= INFO: Setted wifi ======" && echo ""
   fi
@@ -41,7 +41,7 @@ set -o errexit
 } && {
   timedatectl status && echo "======= INFO: Printed clock status ======" && echo ""
 } && {
-  mkfs.fat -F32 "/dev/${boot}" && echo "====== INFO: Formated boot/efi on partition /dev/${boot} ======" && echo ""
+  mkfs.fat -F32 -L boot "/dev/${boot}" && echo "====== INFO: Formated boot/efi on partition /dev/${boot} ======" && echo ""
 } && {
   mkfs.ext2 -L "${mapped_swap}" "/dev/${swap}" 1M && echo "====== INFO: Formated swap on partition /dev/${swap} ======" && echo ""
 } && {
@@ -49,11 +49,11 @@ set -o errexit
 } && {
   cryptsetup open --type luks "/dev/${root}" "${mapped_root}" && echo "====== INFO: Unlocked LUKS root container ======" && echo ""
 } && {
-  mkfs.btrfs "/dev/mapper/${mapped_root}" && echo "====== INFO: Format mapped device /dev/mapper/${mapped_root} =======" && echo ""
+  mkfs.btrfs -L "${mapped_root}" "/dev/mapper/${mapped_root}" && echo "====== INFO: Formated mapped device /dev/mapper/${mapped_root} =======" && echo ""
 } && {
-  mount --options compress=lzo "/dev/mapper/${mapped_root}" /mnt/ && echo "====== INFO: Mount mapped /dev/mapper/${mapped_root} ======" && echo ""
+  mount --options compress=lzo "/dev/mapper/${mapped_root}" /mnt/ && echo "====== INFO: Mounted mapped /dev/mapper/${mapped_root} ======" && echo ""
 } && {
-  btrfs subvolume create /mnt/@ && btrfs subvolume create /mnt/@snapshots && btrfs subvolume create /mnt/@home && btrfs subvolume list -p /mnt/ && echo "====== INFO: Create top-level subvolumes ======" &&  echo ""
+  btrfs subvolume create /mnt/@ && btrfs subvolume create /mnt/@snapshots && btrfs subvolume create /mnt/@home && btrfs subvolume list -p /mnt/ && echo "====== INFO: Create top-level subvolumes ======" &&  echo ""
 } && {
   umount /mnt && echo "====== INFO: Unmount the system partition ======" && echo ""
 } && {
