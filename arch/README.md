@@ -2,17 +2,45 @@
 
 These are scripts for my personals arch linux instllations.
 
-### Arch installation
+### Prepare disk for installation
 
-+ Download prepare disk script:
++ Download script:
 
 ```
-$ curl -LOJ 
-https://raw.githubusercontent.com/arperalta3/scripts/master/arch/prepare-disk.sh
+$ curl -LOJ https://raw.githubusercontent.com/arperalta3/scripts/master/arch/prepare-disk.sh
 ```
 
 + Run prepare disk script:
 
  ```
 $ bash prepare-disk.sh
+```
+
+### Installation part 1
+
++ Download script:
+
+```
+$ curl -LOJ https://raw.githubusercontent.com/arperalta3/scripts/master/arch/install-1.sh
+```
+
++ Run script:
+
+ ```
+$ bash install-1.sh sda sda1 sda2 sda3 la-latin1 false
+```
+The params are: disk name. boot partition, swap partition, root partition, keyboard layout and if use wifi
+
+### Installation part 2
+
++ Download script:
+
+```
+$ curl -LOJ https://raw.githubusercontent.com/arperalta3/scripts/master/arch/install-2.sh
+```
+
++ Run script:
+
+ ```
+$ bash install-2.sh
 ```
