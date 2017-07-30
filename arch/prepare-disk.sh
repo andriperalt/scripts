@@ -16,7 +16,7 @@ disk_name=$1
 mapped_name=cryptdisk
 
 function close_mapped_disk {
-  cryptsetup close "${mapped_name}" && echo "====== OK: Close the temporary container ======"
+  cryptsetup close "${mapped_name}" && echo "====== OK: Closed the temporary container ======"
 }
 
 echo "====== INFO: PLEASE MAKE SURE TO ERASE AND UNMOUNT DISK /dev/${disk_name} FIRST ======"
