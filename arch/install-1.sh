@@ -1,78 +1,66 @@
-#! /bin/sh
+#!/bin/bash
 
-printf "\n\nCreate partitions and confirm, Assume 2 partitions\n\n"
-fdisk -l
-lsblk -l
+# Fail if variables unset
+set -o nounset
+# Fail if any error
+set -o errexit
 
-printf "\n\nSet layout\n\n"
-loadkeys la-latin1
+# Prepare logs
+>install-1.log
+>install-1.err
+exec > >(tee -ia install-1.log) 2> >(tee -ia install-1.err >&2)
 
-printf "\n\nWifi\n\n"
-wifi-menu -o
+# Variables
+disk_name=$1
+boot=$2
+swap=$3
+root=$4
+keyboard_layout=$5
+mapped_swap=cryptswap
+mapped_root=cryptroot
 
-printf "\n\nUpdate the system clock, enable NTP\n\n"
-timedatectl set-ntp true
+gdisk "/dev/${disk_name}" && echo "====== INFO: Disk /dev/${disk_name} formatted"
 
-printf "\n\nSee clock status\n\n"
-timedatectl status
+lsblk -fl && echo "====== INFO: Printed partitions and mounts ======"
 
-printf "\n\nFormat boot/efi -> partition sda1\n\n"
-mkfs.fat -F32 /dev/sda1
+loadkeys "${keyboard_layout}" && echo "====== INFO: Setted keyboard layout to ${keyboard_layout} ======"
 
-printf "\n\nCreate LUKS root container -> partition sda2\n\n"
-cryptsetup luksFormat --key-size 512 /dev/sda2
-cryptsetup luksDump /dev/sda2
+wifi-menu && echo "======= INFO: Setted wifi ======"
 
-printf "\n\nUnlock LUKS root container\n\n"
-cryptsetup open --type luks /dev/sda2 cryptroot
+timedatectl set-ntp true && echo "====== INFO: Update the system clock, enable NTP ======"
 
-printf "\n\nFormat mapped device\n\n"
-mkfs.btrfs /dev/mapper/cryptroot
+timedatectl status && echo "======= INFO: Review clock status ======"
 
-printf "\n\nMount mapped\n\n"
-mount --options compress=lzo /dev/mapper/cryptroot /mnt/
+mkfs.fat -F32 "/dev/${boot}" && echo "====== INFO: Format boot/efi -> partition /dev/${boot} ======"
 
-printf "\n\nCreate top-level subvolumes\n\n"
-btrfs subvolume create /mnt/@
-btrfs subvolume create /mnt/@snapshots
-btrfs subvolume create /mnt/@home
+mkfs.ext2 -L "${mapped_swap}" "/dev/${swap}" 1M && echo "====== INFO: Format swap -> partition /dev/${swap} ======"
 
-printf "\n\nUnmount the system partition\n\n"
-umount /mnt
+cryptsetup luksFormat --key-size 512 "/dev/${root}" && cryptsetup luksDump "/dev/${root}" && echo "====== INFO: Create LUKS root container -> partition /dev/${root} ======"
 
-printf "\n\nMount top-level subvolumes\n\n"
-mount --options compress=lzo,subvol=@ /dev/mapper/cryptroot /mnt
-mkdir /mnt/home
-mount --options compress=lzo,subvol=@home /dev/mapper/cryptroot /mnt/home
-mkdir /mnt/.snapshots
-mount --options compress=lzo,subvol=@snapshots /dev/mapper/cryptroot /mnt/.snapshots
+cryptsetup open --type luks /dev/sda2 cryptroot && echo "====== INFO: Unlock LUKS root container ======"
 
-printf "\n\nCreate nested sub-volumes\n\n"
-mkdir -p /mnt/var/cache/pacman
-btrfs subvolume create /mnt/var/cache/pacman/pkg
-btrfs subvolume create /mnt/var/abs
-btrfs subvolume create /mnt/var/tmp
-btrfs subvolume create /mnt/srv
+mkfs.btrfs "/dev/mapper/${mapped_root}" && echo "====== INFO: Format mapped device /dev/mapper/${mapped_root} ======="
 
-printf "\n\nMount boot/ESP\n\n"
-mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
+mount --options compress=lzo "/dev/mapper/${mapped_root}" /mnt/ && echo "====== INFO: Mount mapped /dev/mapper/${mapped_root} ======"
 
-printf "\n\nInstalling the base package\n\n"
-pacstrap /mnt base
+btrfs subvolume create /mnt/@ && btrfs subvolume create /mnt/@snapshots && btrfs subvolume create /mnt/@home && btrfs subvolume list -p /mnt/ && echo "====== INFO: Create top-level subvolumes ======"
 
-printf "\n\nExecuting fstab\n\n"
-genfstab -U /mnt >> /mnt/etc/fstab
-cat /mnt/etc/fstab
+umount /mnt && echo "====== INFO: Unmount the system partition ======"
 
-printf "\n\nExecuting chroot\n\n"
-arch-chroot /mnt
+mount --options compress=lzo,subvol=@ "/dev/mapper/${mapped_root}" /mnt && mkdir /mnt/home && mount --options compress=lzo,subvol=@home "/dev/mapper/${mapped_root}" /mnt/home && mkdir /mnt/.snapshots && mount --options compress=lzo,subvol=@snapshots "/dev/mapper/${mapped_root}" /mnt/.snapshots && echo "====== INFO: Mount top-level subvolumes ======"
 
-printf "\n\nInstalling reflector\n\n"
-pacman -S --needed reflector
+mkdir -p /mnt/var/cache/pacman && btrfs subvolume create /mnt/var/cache/pacman/pkg && && btrfs subvolume create /mnt/var/abs && btrfs subvolume create /mnt/var/tmp && btrfs subvolume create /mnt/srv && echo "====== INFO: Create nested sub-volume ======"
 
-printf "\n\nRunning reflector\n\n"
-reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlis
+mkdir /mnt/boot && mount "/dev/${boot}" /mnt/boot && echo "====== INFO: Mount boot/ESP to /dev/${boot} ======"
 
-printf "\n\nInstalling basic packages\n\n"
-pacman -S --needed base-devel btrfs-progs zsh
+pacstrap /mnt base && echo "====== INFO: Installing the base package ======"
+
+genfstab -U /mnt >> /mnt/etc/fstab && cat /mnt/etc/fstab && echo "====== INFO: Executing fstab ======"
+
+arch-chroot /mnt && echo "====== INFO: Executing chroot ======"
+
+pacman -S --needed reflector && echo "====== INFO: Installed reflector ======"
+
+reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist && echo "====== INFO: Executed reflector ======"
+
+pacman -S --needed linux-hardened base-devel btrfs-progs zsh && echo "====== INFO: Installed basic packages"
