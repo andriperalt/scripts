@@ -59,7 +59,7 @@ set -o errexit
 } && {
   mount --options compress=lzo,subvol=@ "/dev/mapper/${mapped_root}" /mnt && mkdir /mnt/home && mount --options compress=lzo,subvol=@home "/dev/mapper/${mapped_root}" /mnt/home && mkdir /mnt/.snapshots && mount --options compress=lzo,subvol=@snapshots "/dev/mapper/${mapped_root}" /mnt/.snapshots && echo "====== INFO: Mounted top-level subvolumes ======" && echo ""
 } && {
-  mkdir -p /mnt/var/cache/pacman && btrfs subvolume create /mnt/var/cache/pacman/pkg && btrfs subvolume create /mnt/var/abs && btrfs subvolume create /mnt/var/tmp && btrfs subvolume create /mnt/srv && echo "====== INFO: Create nested sub-volume ======" && echo ""
+  mkdir -p /mnt/var/cache/pacman && btrfs subvolume create /mnt/var/cache/pacman/pkg && btrfs subvolume create /mnt/var/abs && btrfs subvolume create /mnt/var/tmp && btrfs subvolume create /mnt/srv && echo "====== INFO: Create nested sub-volume ======" && echo ""
 } && {
   mkdir /mnt/boot && mount "/dev/${boot}" /mnt/boot && echo "====== INFO: Mount boot/ESP to /dev/${boot} ======" && echo ""
 } && {
