@@ -1,8 +1,4 @@
 #!/bin/bash
-# Fail if variables unset
-set -o nounset
-# Fail if any error
-set -o errexit
 
 # Prepare logs
 >install-1.log
@@ -19,9 +15,17 @@ wifi=$6
 mapped_swap=cryptswap
 mapped_root=cryptroot
 
+echo "====== INFO: Unmounting all ======"
+umount -R /mnt
+cryptsetup close "${mapped_root}"
+echo ""
+
+# Fail if variables unset
+set -o nounset
+# Fail if any error
+set -o errexit
+
 {
-  umount -R /mnt && cryptsetup close "${mapped_root}" && echo "====== INFO: Unmounted all" && echo ""
-} && {
   gdisk "/dev/${disk_name}" && echo "====== INFO: Disk /dev/${disk_name} formatted" && echo ""
 } && {
   lsblk -f && echo "====== INFO: Printed partitions and mounts ======" && echo ""
