@@ -32,7 +32,7 @@ set -o errexit
 } && {
   loadkeys "${keyboard_layout}" && echo "====== INFO: Setted keyboard layout to ${keyboard_layout} ======" && echo ""
 } && {
-  if test "${wifi}" -eq "true"
+  if [ "${wifi}" == "true" ]
   then
     wifi-menu && echo "======= INFO: Setted wifi ======" && echo ""
   fi
@@ -41,7 +41,7 @@ set -o errexit
 } && {
   timedatectl status && echo "======= INFO: Printed clock status ======" && echo ""
 } && {
-  mkfs.fat -F32 -L boot "/dev/${boot}" && echo "====== INFO: Formated boot/efi on partition /dev/${boot} ======" && echo ""
+  mkfs.fat -F32 -n boot "/dev/${boot}" && echo "====== INFO: Formated boot/efi on partition /dev/${boot} ======" && echo ""
 } && {
   mkfs.ext2 -L "${mapped_swap}" "/dev/${swap}" 1M && echo "====== INFO: Formated swap on partition /dev/${swap} ======" && echo ""
 } && {
