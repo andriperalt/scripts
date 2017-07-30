@@ -4,15 +4,15 @@ These are scripts for my personals arch linux instllations.
 
 ### Arch installation
 
-+ Download configuration file:
++ Download prepare disk script:
 
 ```
 $ curl -LOJ 
-https://raw.githubusercontent.com/arperalta3/scripts/master/arch/install-1.sh >> install-1.sh
+https://raw.githubusercontent.com/arperalta3/scripts/master/arch/prepare-disk.sh
 ```
 
-+ Run install
++ Run prepare disk script:
 
  ```
-$ bash install-1.sh
+$ bash prepare-disk.sh
 ```
