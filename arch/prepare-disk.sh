@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "====== INFO: To define disk name run lsblk -f to know the name of the disks ======"
+
 # Fail if variables unset
 set -o nounset
 # Fail if any error
@@ -16,8 +18,6 @@ mapped_name=cryptdisk
 function close_mapped_disk {
   cryptsetup close "${mapped_name}" && echo "====== OK: Close the temporary container ======"
 }
-
-echo "====== INFO: To define disk name run lsblk -f to know the name of the disks ======"
 
 echo "====== INFO: PLEASE MAKE SURE TO ERASE AND UNMOUNT DISK /dev/${disk_name} FIRST ======"
 
