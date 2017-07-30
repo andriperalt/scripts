@@ -21,10 +21,11 @@ function close_mapped_disk {
 
 echo "====== INFO: PLEASE MAKE SURE TO ERASE AND UNMOUNT DISK /dev/${disk_name} FIRST ======"
 
-if cryptsetup open --type plain "/dev/${disk_name}" "${mapped_name}" --key-file /dev/random && echo "======INFO: Mount disk /dev/${disk_name} with random encrypt ======="
+if cryptsetup open --type plain "/dev/${disk_name}" "${mapped_name}" --key-file 
+/dev/random && echo "======INFO: Mounted disk /dev/${disk_name} with random encrypt ======="
 then
   trap "close_mapped_disk; exit" INT TERM EXIT
-  dd if=/dev/zero of="/dev/mapper/${mapped_name}" status=progress bs=1M && echo "====== INFO: Wipe /dev/${disk_name} ======"
+  dd if=/dev/zero of="/dev/mapper/${mapped_name}" status=progress bs=1M && echo "====== INFO: Wiped /dev/${disk_name} ======"
   close_mapped_disk
   trap - INT TERM EXIT
 fi
