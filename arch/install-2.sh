@@ -61,11 +61,6 @@ set -o errexit
   && echo "====== INFO: Defined keyboard layout to ${keyboard_layout} ======" \
   && echo ""
 } && {
-  echo "====== INFO: Defining keyboard layout for X11 to ${keyboard_layout_x11} ======" \
-  && localectl --no-convert set-x11-keymap "${keyboard_layout_x11}" \
-  && echo "====== INFO: Defined keyboard layout for X11 to ${keyboard_layout_x11} ======" \
-  && echo ""
-} && {
   echo "${hostname}" > /etc/hostname \
   && echo "====== INFO: Defined Hostname ======" \
   && echo ""
@@ -114,5 +109,6 @@ set -o errexit
   echo "====== INFO: Exiting new system ======"
   echo "Unmount all partitions with: umount -R /mnt"
   echo "Close cryptroot with: cryptsetup close cryptroot"
+  echo "After reboot please execute: localectl --no-convert set-x11-keymap ${keyboard_layout_x11}"
   exit
 }
