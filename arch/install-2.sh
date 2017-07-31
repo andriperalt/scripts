@@ -1,60 +1,65 @@
-#! /bin/sh
+#!/bin/bash
 
-printf "\n\nThe following must have been configured"
-printf "/etc/crypttab -> if swap"
-printf "/etc/fstab -> if swap"
-printf "/etc/hosts"
-printf "/etc/mkinitcpio.conf"
-printf "/etc/default/grub"
+# Prepare logs
+>install-2.log
+>install-2.err
+exec > >(tee -ia install-2.log) 2> >(tee -ia install-2.err >&2)
 
-printf "\n\nSetting time zone\n\n"
-ln -sf /usr/share/zoneinfo/America/Bogota /etc/localtime
-hwclock --systohc --utc
+# Variables
+time_zone=$1
+keyboard_layout=$2
+keyboard_layout_x11=$3
+hostname=$4
+system_user=$5
+wifi=$6
 
-printf "\n\nSetting Locale\n\n"
-sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
-sed -i 's/#es_CO.UTF-8 UTF-8/es_CO.UTF-8 UTF-8/g' /etc/locale.gen
-sed -i 's/#en_US ISO-8859-1/en_US ISO-8859-1/g' /etc/locale.gen
-sed -i 's/#es_CO ISO-8859-1/es_CO ISO-8859-1/g' /etc/locale.gen
-locale-gen
-echo LANG=en_US.UTF-8 > /etc/locale.conf
-echo LANGUAGE=en_US >> /etc/locale.conf
-echo LC_ALL=C >> /etc/locale.conf
-echo "KEYMAP=la-latin1" > /etc/vconsole.conf
-localectl set-x11-keymap latam
+echo "The following must have been configured:
++ /etc/crypttab
++ /etc/fstab
++ /etc/hosts
++ /etc/mkinitcpio.conf
++ /etc/default/grub
+"
 
-printf "\n\nDefining Hostname\n\n"
-echo "s4n-arpp" > /etc/hostname
+# Fail if variables unset
+set -o nounset
+# Fail if any error
+set -o errexit
 
-printf "\n\nConfiguring network\n\n"
-pacman -S --needed networkmanager network-manager-applet dhclient openntpd networkmanager-dispatcher-openntpd iw wpa_supplicant dialog
-systemctl stop dhcpcd.service
-systemctl start NetworkManager.service
-systemctl enable NetworkManager.service
+{
+  pacman -S --needed reflector && echo "====== INFO: Installed reflector ======" && echo ""
+} && {
+  reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist && echo "====== INFO: Executed reflector ======" && echo ""
+} && {
+  pacman -S --needed linux-hardened base-devel btrfs-progs zsh && echo "====== INFO: Installed basic packages"
+} && {
+  ln -sf "/usr/share/zoneinfo/${time_zone}" /etc/localtime && hwclock --systohc --utc && echo "====== INFO: Setted time zone ======" && echo ""
+} && {
+  sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && sed -i 's/#es_CO.UTF-8 UTF-8/es_CO.UTF-8 UTF-8/g' /etc/locale.gen && sed -i 's/#en_US ISO-8859-1/en_US ISO-8859-1/g' /etc/locale.gen && sed -i 's/#es_CO ISO-8859-1/es_CO ISO-8859-1/g' /etc/locale.gen && locale-gen && echo LANG=en_US.UTF-8 > /etc/locale.conf && echo LANGUAGE=en_US >> /etc/locale.conf && echo LC_ALL=C >> /etc/locale.conf && echo "KEYMAP=${keyboard_layout}" > /etc/vconsole.conf && localectl set-x11-keymap "${keyboard_layout_x11}" && echo "====== INFO: Setted Locale ======" && echo ""
+} && {
+  echo "${hostname}" > /etc/hostname && echo "====== INFO: Defined Hostname ======" && echo ""
+} && {
+  pacman -S --needed networkmanager network-manager-applet dhclient openntpd networkmanager-dispatcher-openntpd && systemctl stop dhcpcd.service && systemctl start NetworkManager.service && systemctl enable NetworkManager.service && echo "====== INFO: Configued network ======" && echo ""
+} && {
+  if [ "${wifi}" == "true" ]
+  then
+    pacman -S --needed iw wpa_supplicant dialog && echo "======= INFO: Setted wifi ======" && echo ""
+  fi
+} && {
+  passwd && echo "====== INFO: Setted root password ======" && echo ""
+} && {
+  useradd -m -g users -G wheel -s /bin/zsh "${system_user}" && passwd "${system_user}" && echo "====== INFO: Added system user ======" && echo ""
+} && {
+  EDITOR=nano visudo && echo "====== INFO: Uncommented %wheel ALL=All ======" && echo ""
+} && {
+  mkinitcpio -p linux && echo "====== INFO: Executed mkinitcpio ======" && echo ""
+} && {
+  pacman -S --needed grub efibootmgr intel-ucode os-prober && echo "====== INFO: Installed packages for GRUB ======"
+} && {
+  grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub && grub-mkconfig --output /boot/grub/grub.cfg && echo "Installed GRUB" && echo ""
+} && {
+  exit && echo "====== INFO: Exited new system ======"
+}
 
-printf "\n\nSet root password\n\n"
-passwd
-
-printf "\n\nAdding system user\n\n"
-useradd -m -g users -G wheel -s /bin/zsh andres
-passwd andres
-
-printf "\n\nUncomment %wheel ALL=All\n\n"
-EDITOR=nano visudo
-
-printf "\n\nExecuting mkinit\n\n"
-mkinitcpio -p linux
-
-printf "\n\nInstalling packages for GRUB\n\n"
-pacman -S --needed grub efibootmgr intel-ucode os-prober
-
-printf "\n\nInstalling GRUB\n\n"
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
-grub-mkconfig --output /boot/grub/grub.cfg
-
-printf "\n\nExiting new system\n\n"
-exit
-
-printf "\n\nUnmount all partitions and close cryptroot\n\n"
-umount -R /mnt
-cryptsetup close cryptroot
+echo "Unmount all partitions with: umount -R /mnt"
+echo "Close cryptroot with: cryptsetup close cryptroot"
