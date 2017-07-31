@@ -92,7 +92,7 @@ set -o errexit
   && echo "====== INFO: Executed mkinitcpio ======" \
   && echo ""
 } && {
-  pacman -S --needed grub efibootmgr intel-ucode os-prober \
+  pacman -S --needed grub efibootmgr intel-ucode os-prober \
   && echo "====== INFO: Installed packages for GRUB ======" \
   && echo ""
 } && {
