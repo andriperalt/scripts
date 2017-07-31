@@ -89,7 +89,7 @@ set -o errexit
   && echo "====== INFO: Added system user ${system_user} ======" \
   && echo ""
 } && {
-  sed -i 's/# %wheel ALL=(ALL) ALL/wheel ALL=(ALL) ALL/g' /etc/sudoers \
+  sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/g' /etc/sudoers \
   && echo "====== INFO: Uncommented %wheel ALL=All ======" \
   && echo ""
 } && {
