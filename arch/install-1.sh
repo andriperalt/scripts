@@ -116,7 +116,9 @@ set -o errexit
   && echo "====== INFO: Installed the base package ======" \
   && echo ""
 } && {
-  genfstab -U /mnt >> /mnt/etc/fstab \
+  echo "swap	LABEL=cryptswap	/dev/urandom	swap,offset=2048,cipher=aes-xts-plain64,size=256" >> /mnt/etc/crypttab \
+  && echo "/dev/mapper/swap	none	swap	defaults	0	0" >> /mnt/etc/fstab \
+  && genfstab -U /mnt >> /mnt/etc/fstab \
   && cat /mnt/etc/fstab \
   && echo "====== INFO: Executed fstab ======" \
   && echo "====== INFO: Finished, please execute: arch-chroot /mnt ======"
