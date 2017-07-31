@@ -21,7 +21,7 @@ set -o nounset
 set -o errexit
 
 {
-  pacman -S --needed reflector \
+  pacman -S --needed --noconfirm reflector \
   && echo "====== INFO: Installed reflector ======" \
   && echo ""
 } && {
