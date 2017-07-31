@@ -65,7 +65,7 @@ set -o errexit
   && echo "====== INFO: Defined Hostname ======" \
   && echo ""
 } && {
-  pacman -S --needed networkmanager network-manager-applet dhclient openntpd networkmanager-dispatcher-openntpd \
+  pacman -S --needed --noconfirm networkmanager network-manager-applet dhclient openntpd networkmanager-dispatcher-openntpd \
   && systemctl stop dhcpcd.service \
   && systemctl start NetworkManager.service \
   && systemctl enable NetworkManager.service \
@@ -74,18 +74,20 @@ set -o errexit
 } && {
   if [ "${wifi}" == "true" ]
   then
-    pacman -S --needed iw wpa_supplicant dialog \
+    pacman -S --needed --noconfirm iw wpa_supplicant dialog \
     && echo "======= INFO: Setted wifi ======" \
     && echo ""
   fi
 } && {
-  passwd \
+  echo "====== INFO: Setting root password ======" \
+  && passwd \
   && echo "====== INFO: Setted root password ======" \
   && echo ""
 } && {
-  useradd -m -g users -G wheel -s /bin/zsh "${system_user}" \
+  echo "====== INFO: Adding system user ${system_user} ======" \
+  && useradd -m -g users -G wheel -s /bin/zsh "${system_user}" \
   && passwd "${system_user}" \
-  && echo "====== INFO: Added system user ======" \
+  && echo "====== INFO: Added system user ${system_user} ======" \
   && echo ""
 } && {
   EDITOR=nano visudo \
@@ -96,12 +98,12 @@ set -o errexit
   && echo "====== INFO: Executed mkinitcpio ======" \
   && echo ""
 } && {
-  pacman -S --needed grub efibootmgr intel-ucode os-prober \
+  pacman -S --needed --noconfirm grub efibootmgr intel-ucode os-prober \
   && echo "====== INFO: Installed packages for GRUB ======" \
   && echo ""
 } && {
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub \
-  nano /etc/default/grub \
+  && nano /etc/default/grub \
   && grub-mkconfig --output /boot/grub/grub.cfg \
   && echo "Installed GRUB" \
   && echo ""
