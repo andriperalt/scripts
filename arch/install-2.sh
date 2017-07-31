@@ -40,7 +40,7 @@ set -o errexit
   && echo ""
 } && {
   ln -sf "/usr/share/zoneinfo/${time_zone}" /etc/localtime \
-  && hwclock --systohc --utc \
+  && hwclock --systohc --utc \
   && echo "====== INFO: Setted time zone ======" \
   && echo ""
 } && {
@@ -57,7 +57,7 @@ set -o errexit
   && echo "====== INFO: Setted Locale ======" \
   && echo ""
 } && {
-  echo "${hostname}" > /etc/hostname \
+  echo "${hostname}" > /etc/hostname \
   && echo "====== INFO: Defined Hostname ======" \
   && echo ""
 } && {
