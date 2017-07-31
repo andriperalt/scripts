@@ -29,7 +29,7 @@ mapped_root=cryptroot
   && echo "====== INFO: Executed reflector ======" \
   && echo ""
 } && {
-  pacman -S --needed --noconfirm linux-hardened base-devel zsh \
+  pacman -S --needed --noconfirm linux-hardened base-devel zsh sudo \
   && echo "====== INFO: Installed basic packages" \
   && echo ""
 } && {
