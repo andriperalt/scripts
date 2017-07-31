@@ -33,7 +33,7 @@ set -o errexit
   && echo "====== INFO: Executed reflector ======" \
   && echo ""
 } && {
-  pacman -S --needed linux-hardened base-devel btrfs-progs zsh \
+  pacman -S --needed --noconfirm linux-hardened base-devel btrfs-progs zsh \
   && echo "====== INFO: Installed basic packages" \
   && echo ""
 } && {
