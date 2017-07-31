@@ -42,5 +42,6 @@ $ curl -LOJ https://raw.githubusercontent.com/arperalta3/scripts/master/arch/ins
 + Run script:
 
  ```
-$ bash install-2.sh
+$ bash install-2.sh America/Bogota la-latin1 latam s4n-arpp andres false
 ```
+The params are: local time zone, keyboard layout, keyboard layout for x11, hostname, system user to create and if use wifi
