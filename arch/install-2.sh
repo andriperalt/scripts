@@ -97,6 +97,7 @@ set -o errexit
   && echo ""
 } && {
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub \
+  nano /etc/default/grub \
   && grub-mkconfig --output /boot/grub/grub.cfg \
   && echo "Installed GRUB" \
   && echo ""
