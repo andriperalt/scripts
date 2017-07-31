@@ -6,18 +6,14 @@
 exec > >(tee -ia install-2.log) 2> >(tee -ia install-2.err >&2)
 
 # Variables
-time_zone=$1
-keyboard_layout=$2
-keyboard_layout_x11=$3
-hostname=$4
-system_user=$5
-wifi=$6
-
-echo "The following must have been configured:"
-echo "  + /etc/crypttab"
-echo "  + /etc/fstab"
-echo "  + /etc/hosts"
-echo "  + /etc/mkinitcpio.conf"
+root=$1
+time_zone=$2
+keyboard_layout=$3
+keyboard_layout_x11=$4
+hostname=$5
+system_user=$6
+wifi=$7
+mapped_root=cryptroot
 
 # Fail if variables unset
 set -o nounset
@@ -39,6 +35,7 @@ set -o errexit
 } && {
   ln -sf "/usr/share/zoneinfo/${time_zone}" /etc/localtime \
   && hwclock --systohc --utc \
+  && date \
   && echo "====== INFO: Setted time zone ======" \
   && echo ""
 } && {
@@ -61,8 +58,10 @@ set -o errexit
   && echo "====== INFO: Defined keyboard layout to ${keyboard_layout} ======" \
   && echo ""
 } && {
-  echo "${hostname}" > /etc/hostname \
-  && echo "====== INFO: Defined Hostname ======" \
+  echo "====== INFO: Defined hosts with hostname ${hostname} ======" \
+  && echo "127.0.1.1	${hostname}.localdomain	${hostname}" >> /etc/hosts \
+  && echo "${hostname}" > /etc/hostname \
+  && echo "====== INFO: Defined hosts ======" \
   && echo ""
 } && {
   pacman -S --needed --noconfirm networkmanager network-manager-applet dhclient openntpd networkmanager-dispatcher-openntpd \
@@ -90,11 +89,13 @@ set -o errexit
   && echo "====== INFO: Added system user ${system_user} ======" \
   && echo ""
 } && {
-  EDITOR=nano visudo \
+  sed -i 's/# %wheel ALL=(ALL) ALL/wheel ALL=(ALL) ALL/g' /etc/sudoers \
   && echo "====== INFO: Uncommented %wheel ALL=All ======" \
   && echo ""
 } && {
-  mkinitcpio -p linux \
+  sed -i 's/BINARIES=""/BINARIES="/usr/bin/btrfs"/g' /etc/mkinitcpio.conf \
+  && sed -i 's/HOOKS="base udev autodetect modconf block filesystems keyboard fsck"/HOOKS="base udev autodetect modconf block keymap encrypt filesystems keyboard fsck"/g' /etc/mkinitcpio.conf \
+  && mkinitcpio -p linux \
   && echo "====== INFO: Executed mkinitcpio ======" \
   && echo ""
 } && {
@@ -103,7 +104,8 @@ set -o errexit
   && echo ""
 } && {
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub \
-  && nano /etc/default/grub \
+  && sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cryptdevice=/dev/{root}:{mapped_root}"/g' /etc/default/grub
+  && echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
   && grub-mkconfig --output /boot/grub/grub.cfg \
   && echo "Installed GRUB" \
   && echo ""
