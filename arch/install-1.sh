@@ -69,5 +69,5 @@ set -o errexit
 } && {
   genfstab -U /mnt >> /mnt/etc/fstab && cat /mnt/etc/fstab && echo "====== INFO: Executing fstab ======" && echo ""
 } && {
-  arch-chroot /mnt && echo "====== INFO: Executing chroot ======" && echo ""
+  arch-chroot /mnt && echo "====== INFO: Executing chroot ======" && exit
 }
