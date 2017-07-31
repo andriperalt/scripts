@@ -18,7 +18,6 @@ echo "The following must have been configured:
 + /etc/fstab
 + /etc/hosts
 + /etc/mkinitcpio.conf
-+ /etc/default/grub
 "
 
 # Fail if variables unset
