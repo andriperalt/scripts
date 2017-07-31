@@ -104,8 +104,8 @@ set -o errexit
   && echo ""
 } && {
   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub \
-  && sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cryptdevice=/dev/{root}:{mapped_root}"/g' /etc/default/grub
-  && echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
+  && sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cryptdevice=/dev/{root}:{mapped_root}"/g' /etc/default/grub \
+  && echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub \
   && grub-mkconfig --output /boot/grub/grub.cfg \
   && echo "Installed GRUB" \
   && echo ""
