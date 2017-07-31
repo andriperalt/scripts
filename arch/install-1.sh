@@ -35,6 +35,8 @@ set -o errexit
   if [ "${wifi}" == "true" ]
   then
     wifi-menu && echo "======= INFO: Setted wifi ======" && echo ""
+  else
+    systemctl restart dhcpcd.service
   fi
 } && {
   timedatectl set-ntp true && echo "====== INFO: Updated the system clock, enable NTP ======" && echo ""
@@ -68,10 +70,4 @@ set -o errexit
   genfstab -U /mnt >> /mnt/etc/fstab && cat /mnt/etc/fstab && echo "====== INFO: Executing fstab ======" && echo ""
 } && {
   arch-chroot /mnt && echo "====== INFO: Executing chroot ======" && echo ""
-} && {
-  pacman -S --needed reflector && echo "====== INFO: Installed reflector ======" && echo ""
-} && {
-  reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist && echo "====== INFO: Executed reflector ======" && echo ""
-} && {
-  pacman -S --needed linux-hardened base-devel btrfs-progs zsh && echo "====== INFO: Installed basic packages"
 }
