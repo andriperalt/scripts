@@ -84,7 +84,6 @@ set -o errexit
   btrfs subvolume create /mnt/@ \
   && btrfs subvolume create /mnt/@snapshots \
   && btrfs subvolume create /mnt/@home \
-  && btrfs subvolume list -p /mnt/ \
   && echo "====== INFO: Create top-level subvolumes ======" \
   && echo ""
 } && {
