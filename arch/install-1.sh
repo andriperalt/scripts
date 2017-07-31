@@ -112,7 +112,7 @@ echo ""
   && echo "====== INFO: Mounted boot/ESP to /dev/${boot} ======" \
   && echo ""
 } && {
-  pacstrap /mnt base \
+  pacstrap /mnt base btrfs-progs \
   && echo "====== INFO: Installed the base package ======" \
   && echo ""
 } && {
