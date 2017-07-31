@@ -56,12 +56,14 @@ set -o errexit
   && echo "====== INFO: Defined locale ======" \
   && echo ""
 } && {
-  echo "KEYMAP=${keyboard_layout}" > /etc/vconsole.conf \
-  && echo "====== INFO: Defined keyboard layout ======" \
+  echo "====== INFO: Defining keyboard layout to ${keyboard_layout} ======" \
+  && echo "KEYMAP=${keyboard_layout}" > /etc/vconsole.conf \
+  && echo "====== INFO: Defined keyboard layout to ${keyboard_layout} ======" \
   && echo ""
 } && {
-  localectl set-x11-keymap "${keyboard_layout_x11}" \
-  && echo "====== INFO: Defined keyboard layout for X11 ======" \
+  echo "====== INFO: Defining keyboard layout for X11 to ${keyboard_layout_x11} ======" \
+  && localectl --no-convert set-x11-keymap "${keyboard_layout_x11}" \
+  && echo "====== INFO: Defined keyboard layout for X11 to ${keyboard_layout_x11} ======" \
   && echo ""
 } && {
   echo "${hostname}" > /etc/hostname \
