@@ -47,12 +47,21 @@ set -o errexit
   && sed -i 's/#en_US ISO-8859-1/en_US ISO-8859-1/g' /etc/locale.gen \
   && sed -i 's/#es_CO ISO-8859-1/es_CO ISO-8859-1/g' /etc/locale.gen \
   && locale-gen \
-  && echo LANG=en_US.UTF-8 > /etc/locale.conf \
+  && echo "====== INFO: Generated locale ======" \
+  && echo ""
+} && {
+  echo LANG=en_US.UTF-8 > /etc/locale.conf \
   && echo LANGUAGE=en_US >> /etc/locale.conf \
   && echo LC_ALL=C >> /etc/locale.conf \
-  && echo "KEYMAP=${keyboard_layout}" > /etc/vconsole.conf \
-  && localectl set-x11-keymap "${keyboard_layout_x11}" \
-  && echo "====== INFO: Setted Locale ======" \
+  && echo "====== INFO: Defined locale ======" \
+  && echo ""
+} && {
+  echo "KEYMAP=${keyboard_layout}" > /etc/vconsole.conf \
+  && echo "====== INFO: Defined keyboard layout ======" \
+  && echo ""
+} && {
+  localectl set-x11-keymap "${keyboard_layout_x11}" \
+  && echo "====== INFO: Defined keyboard layout for X11 ======" \
   && echo ""
 } && {
   echo "${hostname}" > /etc/hostname \
