@@ -5,6 +5,11 @@
 >install-2.err
 exec > >(tee -ia install-2.log) 2> >(tee -ia install-2.err >&2)
 
+# Fail if variables unset
+set -o nounset
+# Fail if any error
+set -o errexit
+
 # Variables
 root=$1
 time_zone=$2
@@ -14,11 +19,6 @@ hostname=$5
 system_user=$6
 wifi=$7
 mapped_root=cryptroot
-
-# Fail if variables unset
-set -o nounset
-# Fail if any error
-set -o errexit
 
 {
   pacman -S --needed --noconfirm reflector \

@@ -5,6 +5,11 @@
 >install-1.err
 exec > >(tee -ia install-1.log) 2> >(tee -ia install-1.err >&2)
 
+# Fail if variables unset
+set -o nounset
+# Fail if any error
+set -o errexit
+
 # Variables
 disk_name=$1
 boot=$2
@@ -19,11 +24,6 @@ echo "====== INFO: Unmounting all ======"
 umount -R /mnt
 cryptsetup close "${mapped_root}"
 echo ""
-
-# Fail if variables unset
-set -o nounset
-# Fail if any error
-set -o errexit
 
 {
   gdisk "/dev/${disk_name}" \
