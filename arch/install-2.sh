@@ -27,6 +27,8 @@ set -o nounset
 set -o errexit
 
 {
+  arch-chroot /mnt && echo "====== INFO: Executed chroot ======" && echo ""
+} && {
   pacman -S --needed reflector && echo "====== INFO: Installed reflector ======" && echo ""
 } && {
   reflector --latest 200 --sort rate --save /etc/pacman.d/mirrorlist && echo "====== INFO: Executed reflector ======" && echo ""

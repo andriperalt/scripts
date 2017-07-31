@@ -26,20 +26,32 @@ set -o nounset
 set -o errexit
 
 {
-  gdisk "/dev/${disk_name}" && echo "====== INFO: Disk /dev/${disk_name} formatted" && echo ""
+  gdisk "/dev/${disk_name}" \
+  && echo "====== INFO: Disk /dev/${disk_name} formatted" \
+  && echo ""
 } && {
-  lsblk -f && echo "====== INFO: Printed partitions and mounts ======" && echo ""
+  lsblk -f \
+  && echo "====== INFO: Printed partitions and mounts ======" \
+  && echo ""
 } && {
-  loadkeys "${keyboard_layout}" && echo "====== INFO: Setted keyboard layout to ${keyboard_layout} ======" && echo ""
+  loadkeys "${keyboard_layout}" \
+  && echo "====== INFO: Setted keyboard layout to ${keyboard_layout} ======" \
+  && echo ""
 } && {
   if [ "${wifi}" == "true" ]
   then
-    wifi-menu && echo "======= INFO: Setted wifi ======" && echo ""
+    wifi-menu \
+    && echo "======= INFO: Setted wifi ======" \
+    && echo ""
   else
-    systemctl restart dhcpcd.service
+    systemctl restart dhcpcd.service \
+    && echo "======= INFO: Setted dhcp ======" \
+    && echo ""
   fi
 } && {
-  timedatectl set-ntp true && echo "====== INFO: Updated the system clock, enable NTP ======" && echo ""
+  timedatectl set-ntp true \
+  && echo "====== INFO: Updated the system clock, enable NTP ======" \
+  && echo ""
 } && {
   timedatectl status && echo "======= INFO: Printed clock status ======" && echo ""
 } && {
@@ -63,11 +75,9 @@ set -o errexit
 } && {
   mkdir -p /mnt/var/cache/pacman && btrfs subvolume create /mnt/var/cache/pacman/pkg && btrfs subvolume create /mnt/var/abs && btrfs subvolume create /mnt/var/tmp && btrfs subvolume create /mnt/srv && echo "====== INFO: Create nested sub-volume ======" && echo ""
 } && {
-  mkdir /mnt/boot && mount "/dev/${boot}" /mnt/boot && echo "====== INFO: Mount boot/ESP to /dev/${boot} ======" && echo ""
+  mkdir /mnt/boot && mount "/dev/${boot}" /mnt/boot && echo "====== INFO: Mounted boot/ESP to /dev/${boot} ======" && echo ""
 } && {
-  pacstrap /mnt base && echo "====== INFO: Installing the base package ======" && echo ""
+  pacstrap /mnt base && echo "====== INFO: Installed the base package ======" && echo ""
 } && {
-  genfstab -U /mnt >> /mnt/etc/fstab && cat /mnt/etc/fstab && echo "====== INFO: Executing fstab ======" && echo ""
-} && {
-  arch-chroot /mnt && echo "====== INFO: Executing chroot ======" && exit
+  genfstab -U /mnt >> /mnt/etc/fstab && cat /mnt/etc/fstab && echo "====== INFO: Executed fstab ======" && echo "=== INFO: Finished, please execute: arch-chroot /mnt ======"
 }
