@@ -13,12 +13,11 @@ hostname=$4
 system_user=$5
 wifi=$6
 
-echo "The following must have been configured:
-+ /etc/crypttab
-+ /etc/fstab
-+ /etc/hosts
-+ /etc/mkinitcpio.conf
-"
+echo "The following must have been configured:"
+echo "  + /etc/crypttab"
+echo "  + /etc/fstab"
+echo "  + /etc/hosts"
+echo "  + /etc/mkinitcpio.conf"
 
 # Fail if variables unset
 set -o nounset
