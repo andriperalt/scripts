@@ -113,6 +113,8 @@ mapped_root=cryptroot
   echo "====== INFO: Exiting new system ======"
   echo "Unmount all partitions with: umount -R /mnt"
   echo "Close cryptroot with: cryptsetup close cryptroot"
-  echo "After reboot please execute: localectl --no-convert set-x11-keymap ${keyboard_layout_x11}"
+  echo "After reboot please execute: sudo localectl set-keymap --no-convert la-latin1 us"
+  echo "After reboot please execute: sudo localectl set-x11-keymap --no-convert latam,us "" "" 
+grp:alt_shift_toggle"
   exit
 }
